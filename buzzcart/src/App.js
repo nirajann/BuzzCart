@@ -8,7 +8,7 @@ import { Account } from "./pages/account/Account";
 import { Login } from "./components/Login/index";
 import { MainLayout } from "./Adminpanel/layout/MainLayout";
 import Blank from './Adminpanel/pages/Blank'
-import OrderPage from './Adminpanel/pages/order'
+import AdminOrderPage from './Adminpanel/pages/order'
 import AdminproductPage from './Adminpanel/pages/product'
 import AdminUserPage from './Adminpanel/pages/user'
 import EditProductPage from './Adminpanel/pages/editproduct'
@@ -17,6 +17,9 @@ import AdminContactPage from './Adminpanel/pages/contact'
 import Dashboard from './Adminpanel/pages/Dashboard'
 import { Signup } from "./components/Singup/index";
 import { Product } from "./components/product/Product";
+import { OrderPage } from "./components/order/order";
+import { Help } from "./components/help/help";
+import { Contact } from "./components/ContactUs/contact";
 import { ProductDetailPage } from "./components/product/ProductDetailPage";
 import { Home } from "./pages/home/Home";
 import { useSelector } from "react-redux";
@@ -40,13 +43,16 @@ const App = () => {
        
         <Route path="/Product" element={<Product />} />
         <Route path="/productDetail/:id" element={<ProductDetailPage />} />
+        <Route path="/OrderPage" element={<OrderPage />} />
+        <Route path="/Help" element={<Help />} />
+        <Route path="/Contact" element={<Contact />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
 
         <Route path="/AdminPanel" element={<AdminProtected Component={MainLayout}/>}>
           <Route index element={<AdminProtected Component={Dashboard}/> } />
-          <Route path="orders" element={<OrderPage />} />
+          <Route path="orders" element={<AdminOrderPage />} />
           <Route path="products" element={<AdminproductPage />} />
           <Route path="EditProductPage" element={ <AdminProtected Component={EditProductPage}/>} />
           <Route path="CreateProductForm" element={ <AdminProtected Component={CreateProductForm}/>}  />

@@ -11,6 +11,7 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.3.1",
     "chart.js": "^3.7.0",
+    "fs": "^0.0.1-security",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.0.0",
     "react-circular-progressbar": "^2.0.4",

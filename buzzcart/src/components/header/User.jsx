@@ -71,18 +71,23 @@ export const User = () => {
                   <h4>My Account</h4>
                 </button>
               </Link>
+              <Link to='/OrderPage'>
               <button className='box'>
                 <BsBagCheck className='icon' />
                 <h4>My Order</h4>
               </button>
+              </Link>
               <button className='box'>
                 <AiOutlineHeart className='icon' />
                 <h4>Wishlist</h4>
               </button>
+              <Link to='/Help'>
               <button className='box'>
                 <GrHelp className='icon' />
                 <h4>Help</h4>
+              
               </button>
+              </Link>
               <button className='box' onClick={handleLogout}>
                 <BiLogOut className='icon' />
                 <h4>Log Out</h4>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const AdminOrderPage = () => {
+export const OrderPage = () => {
   const [orders, setOrders] = useState([]);
+  const userId = window.localStorage.getItem('userid');
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -14,7 +15,7 @@ const AdminOrderPage = () => {
           },
         };
 
-        const response = await axios.get('http://localhost:4000/order/getorderss', config);
+        const response = await axios.get(`http://localhost:4000/order/myorder?userId=${userId}`, config);
         setOrders(response.data);
       } catch (error) {
         console.log(error);
@@ -22,7 +23,7 @@ const AdminOrderPage = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [userId]);
 
   const handleDeleteOrder = async (orderId) => {
     try {
@@ -74,18 +75,14 @@ const AdminOrderPage = () => {
                 <th>Username</th>
                 <th>Price</th>
                 <th>Action</th>
-                <th>Phone</th>
-                <th>Email</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id}>
-                  <td>{order.productId ? order.productId.name : 'N/A'}</td>
-                  <td>{order.userId ? order.userId.username : 'N/A'}</td>
-                  <td>$ {order.productId ? order.productId.price * order.quantity : 'N/A'}</td>
-                  <td>{order.phone ? order.phone : 'N/A'}</td>
-                  <td>{order.email ? order.email : 'N/A'}</td>
+                  <td>{order.productId.name}</td>
+                  <td>{order.userId && order.userId.username}</td>
+                  <td>$ {order.productId.price * order.quantity}</td>
                   <td>
                     {order.verified ? (
                       <button className="btn btn-success mx-2" disabled>
@@ -110,4 +107,4 @@ const AdminOrderPage = () => {
   );
 };
 
-export default AdminOrderPage;
+export default OrderPage;

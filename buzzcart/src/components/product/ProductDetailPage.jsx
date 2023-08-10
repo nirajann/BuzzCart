@@ -124,6 +124,7 @@ export const ProductDetailPage = (props) => {
             <div className="product-div-right">
               {/* Existing content... */}
               <span className="product-name">{product.name}</span>
+              <p>{product.desc}</p>
               <span className="product-price">$ {product.price}</span>
               <div className="product-rating">
                 {renderStarIcons(productRating)}

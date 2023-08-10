@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../Models/userModel');
 const upload = require('../Middleware/upload');
+const auditLogger = require('../utlis/auditlogger');
 
 const authUser = async (req, res, next) => {
   const { username, password } = req.body;
@@ -27,6 +28,7 @@ const authUser = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
+    auditLogger(user._id, username, 'logged in');
 
     return res.status(200).send({
       msg: 'Login Successful...!',
@@ -70,6 +72,8 @@ const registerUser = async (req, res) => {
       });
 
       const savedUser = await user.save();
+
+      auditLogger(savedUser._id, username, 'registered');
 
       res.status(201).json({
         _id: savedUser._id,
