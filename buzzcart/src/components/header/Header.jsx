@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/images/buzzcart.png";
 import "./header.css"; // Import your header styles
@@ -14,10 +14,24 @@ export const Header = ({ products, setSearchResults }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
 
+  let logoutTimer;
+
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/");
+    navigate('/');
   };
+
+  useEffect(() => {
+    logoutTimer = setTimeout(() => {
+    localStorage.clear();
+    navigate('/');
+      console.log('User automatically logged out after 2 minutes');
+    }, 6 * 60 * 1000); // 2 minutes in milliseconds
+
+    return () => {
+      clearTimeout(logoutTimer);
+    };
+  }, []);
 
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();

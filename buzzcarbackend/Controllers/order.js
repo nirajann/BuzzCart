@@ -5,43 +5,27 @@ const createOrder = async (req, res, next) => {
   try {
     const { userId, cartItems, location, phone, email } = req.body;
 
-    if (!userId) {
-      throw new Error("userId is required");
+    if (!userId || !cartItems || !location || !phone || !email) {
+      return res.status(400).json({ error: "Missing required information" });
     }
 
-    if (!cartItems || cartItems.length === 0) {
-      throw new Error("Cart items are empty");
-    }
+    const newOrders = cartItems.map((item) => ({
+      userId,
+      productId: item.productId,
+      quantity: item.quantity,
+      location,
+      phone,
+      email,
+    }));
 
-    const orderPromises = cartItems.map(async (item) => {
-      const { productId, quantity } = item;
+    const savedOrders = await Orders.insertMany(newOrders);
 
-      if (!productId) {
-        throw new Error("productId is required");
-      }
-
-      // Create a new order
-      const newOrder = new Orders({
-        userId,
-        productId,
-        quantity,
-        location,
-        phone,
-        email,
-      });
-
-      // Save the order
-      return newOrder.save();
-    });
-
-    // Wait for all order promises to resolve
-    const orders = await Promise.all(orderPromises);
-
-    res.json({ message: "Orders created successfully", orders });
+    res.json({ message: "Orders created successfully", orders: savedOrders });
   } catch (error) {
     next(error);
   }
 };
+
 
 const getAllOrder = (req, res, next) => {
   Orders.find()

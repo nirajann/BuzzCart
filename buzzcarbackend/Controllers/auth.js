@@ -4,6 +4,10 @@ const UserModel = require('../Models/userModel');
 const upload = require('../Middleware/upload');
 const auditLogger = require('../utlis/auditlogger');
 
+
+
+const MAX_FAILED_ATTEMPTS = 3; // Maximum allowed failed attempts
+
 const authUser = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -16,6 +20,16 @@ const authUser = async (req, res, next) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
+      // Update failed login attempts count
+      user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+
+      // Block user if max attempts reached
+      if (user.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
+        user.isBlocked = true;
+      }
+
+      await user.save();
+
       return res.status(400).send({ error: 'Password does not match' });
     }
 

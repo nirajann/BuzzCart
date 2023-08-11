@@ -10,6 +10,7 @@ export const Login = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
+	const [failedAttempts, setFailedAttempts] = useState(0); // Track failed attempts
   
 	const navigate = useNavigate();
   
@@ -31,9 +32,15 @@ export const Login = () => {
 
 		  
 		})
-		.catch((err) => {
-		  setErrorMessage('Incorrect username or password');
-		});
+		.catch(() => {
+			// Failed login attempt
+			setErrorMessage('Incorrect username or password');
+			setFailedAttempts((prevAttempts) => prevAttempts + 1); // Increment failed attempts
+	
+			if (failedAttempts >= 2) {
+			  setErrorMessage('Too many failed login attempts. Your account is temporarily blocked.');
+			}
+		  });
 	};
   
 	useEffect(() => {

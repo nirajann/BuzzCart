@@ -137,31 +137,56 @@ const searchProduct = async (req, res, next) => {
   }
 };
 
-const addProductRating = async (req, res, next) => {
+
+const addProductRating = async (req, res) => {
   try {
-    const productId = req.params.id;
-    const userId = req.body.userId;
-    const value = req.body.value;
+    const userId = req.body.userId; // Assuming userId is sent in the request body
+    const value = req.body.value;   // Assuming value is sent in the request body
+    const productId = req.body.productId;
+
+    // Create an array to store invalid fields
+    const invalidFields = [];
+
+    // Check for missing or invalid data
+    if (!userId) {
+      invalidFields.push('userId');
+    }
+    if (!productId) {
+      invalidFields.push('productId');
+    }
+    if (value === null || value === undefined || typeof value !== 'number' || value < 0 || value > 5) {
+      invalidFields.push('value');
+    }
+
+    // If there are invalid fields, respond with the details
+    if (invalidFields.length > 0) {
+      return res.status(400).json({ message: `Invalid data: ${invalidFields.join(', ')}` });
+    }
+
+    // Fetch the product from the database
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({ msg: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found' });
     }
 
-    const existingRating = product.ratings.find((rating) => rating.userId.toString() === userId);
-    if (existingRating) {
-      existingRating.value = value;
-    } else {
-      product.ratings.push({ userId, value });
-    }
+    // Update the rating logic
+    product.ratings.push({ userId, value });
+    const totalRatings = product.ratings.length;
+    const sumRatings = product.ratings.reduce((sum, rating) => sum + rating.value, 0);
+    product.rating = sumRatings / totalRatings;
 
+    // Save the updated product
     await product.save();
 
-    res.status(200).json(product);
+    return res.status(200).json({ message: 'Rating added successfully', product });
   } catch (error) {
-    next(error);
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
 
 const addProductComment = async (req, res, next) => {
   try {
